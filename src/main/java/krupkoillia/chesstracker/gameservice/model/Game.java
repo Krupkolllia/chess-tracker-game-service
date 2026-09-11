@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import krupkoillia.chesstracker.gameservice.model.enums.AnalysisStatus;
 import krupkoillia.chesstracker.gameservice.model.enums.Color;
-import krupkoillia.chesstracker.gameservice.model.enums.TimeControl;
 import krupkoillia.chesstracker.gameservice.model.enums.Result;
+import krupkoillia.chesstracker.gameservice.model.enums.TimeControl;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -69,9 +69,9 @@ public class Game {
     private Result result;
 
     @OneToMany(
-        fetch = FetchType.LAZY,
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private List<Move> moves = new ArrayList<>();
 
