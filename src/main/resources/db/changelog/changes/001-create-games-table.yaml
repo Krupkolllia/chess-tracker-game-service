@@ -81,6 +81,12 @@ databaseChangeLog:
                   constraints:
                     nullable: false
 
+        - createSequence:
+            sequenceName: games_seq
+            startValue: 1
+            incrementBy: 50
+
+
         - sql:
             sql: CREATE INDEX idx_games_user_id ON games (user_id);
 

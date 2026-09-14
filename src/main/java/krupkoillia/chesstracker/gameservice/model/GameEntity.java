@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -34,6 +35,11 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(name = "games")
 public class GameEntity {
 
+    @SequenceGenerator(
+            name = "games_seq",
+            sequenceName = "games_seq",
+            allocationSize = 50
+    )
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
     private Long id;

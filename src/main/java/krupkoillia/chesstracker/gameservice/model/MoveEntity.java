@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import krupkoillia.chesstracker.gameservice.model.enums.Color;
 import lombok.Getter;
@@ -27,6 +28,11 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(name = "moves")
 public class MoveEntity {
 
+    @SequenceGenerator(
+            name = "moves_seq",
+            sequenceName = "moves_seq",
+            allocationSize = 50
+    )
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
     private Long id;

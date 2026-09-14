@@ -1,1 +1,6 @@
 databaseChangeLog:
+  - include:
+      file: db/changelog/changes/001-create-games-table.yaml
+
+  - include:
+      file: db/changelog/changes/002-create-moves-table.yaml

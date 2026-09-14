@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-moves-table
+      author: Krupko Illia
+
+      changes:
+        - createTable:
+            tableName: moves
+
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: game_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_moves_game_id
+                    references: games(id)
+
+              - column:
+                  name: move_number
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: color
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: fen
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: notation
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+        - createSequence:
+            sequenceName: moves_seq
+            startValue: 1
+            incrementBy: 50
+
+        - sql:
+            sql: ALTER TABLE moves ADD CONSTRAINT uq_moves_game_id_move_number_color UNIQUE (game_id, move_number, color);
+
+        - sql:
+            sql: ALTER TABLE moves ADD CONSTRAINT chk_move_numbers_limit CHECK (move_number > 0 AND move_number <= 500);
+
+        - sql:
+            sql: ALTER TABLE moves ADD CONSTRAINT chk_color_value_in_bound CHECK (color IN ('WHITE', 'BLACK'));
+
+        - sql:
+            sql: ALTER TABLE moves ADD CONSTRAINT chk_fen_length CHECK (LENGTH(fen) >= 24 AND LENGTH(FEN) <= 100);
+
+        - sql:
+            sql: ALTER TABLE moves ADD CONSTRAINT chk_notation_length CHECK (LENGTH(notation) >= 2 AND LENGTH(notation) <= 7);
