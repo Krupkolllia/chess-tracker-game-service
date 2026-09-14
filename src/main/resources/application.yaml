@@ -7,7 +7,12 @@ logging:
   level:
     org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
 
+  swagger-ui:
+    path: /swagger-ui
 
 security:
   gateway:
