@@ -1,6 +1,10 @@
 server:
   port: 8081
 
+security:
+  gateway:
+    secret: ${SHARED_GATEWAY_SECRET}
+
 spring:
   application:
     name: GameService
