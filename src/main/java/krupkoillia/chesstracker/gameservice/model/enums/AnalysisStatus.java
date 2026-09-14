@@ -4,8 +4,6 @@ public enum AnalysisStatus {
 
     NOT_STARTED,
 
-    STARTED,
-
     PROCESSING,
 
     COMPLETED,
