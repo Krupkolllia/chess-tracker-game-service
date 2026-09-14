@@ -6,9 +6,7 @@ import krupkoillia.chesstracker.gameservice.model.enums.AnalysisStatus;
 import krupkoillia.chesstracker.gameservice.model.enums.Color;
 import krupkoillia.chesstracker.gameservice.model.enums.Result;
 import krupkoillia.chesstracker.gameservice.model.enums.TimeControl;
-import lombok.With;
 
-@With
 public record GameResponseDto(
         Long id,
         String pgn,
