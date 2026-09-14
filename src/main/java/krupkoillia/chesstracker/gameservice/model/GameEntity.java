@@ -32,7 +32,7 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLDelete(sql = "UPDATE games SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 @Table(name = "games")
-public class Game {
+public class GameEntity {
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
@@ -41,7 +41,7 @@ public class Game {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String pgn;
 
     @Enumerated(EnumType.STRING)
@@ -69,18 +69,19 @@ public class Game {
     private Result result;
 
     @OneToMany(
+            mappedBy = "game",
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Move> moves = new ArrayList<>();
+    private List<MoveEntity> moves = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "analysis_status", nullable = false)
     private AnalysisStatus analysisStatus;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     @Column(name = "is_deleted", nullable = false)
