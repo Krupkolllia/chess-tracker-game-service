@@ -1,0 +1,112 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-games-table
+      author: Krupko Illia
+
+      changes:
+        - createTable:
+            tableName: games
+
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: pgn
+                  type: TEXT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: time_control
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: white_name
+                  type: VARCHAR(255)
+
+              - column:
+                  name: black_name
+                  type: VARCHAR(255)
+
+              - column:
+                  name: white_elo
+                  type: INT
+
+              - column:
+                  name: black_elo
+                  type: INT
+
+              - column:
+                  name: user_color
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: result
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: analysis_status
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: is_deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+        - createSequence:
+            sequenceName: games_seq
+            startValue: 1
+            incrementBy: 50
+
+
+        - sql:
+            sql: CREATE INDEX idx_games_user_id ON games (user_id);
+
+        - sql:
+            sql: ALTER TABLE games ADD CONSTRAINT chk_pgn_size_limits CHECK (LENGTH(pgn) > 0 AND LENGTH(pgn) <= 100000);
+
+        - sql:
+            sql: ALTER TABLE games ADD CONSTRAINT chk_time_control_value_in_bound CHECK (time_control IN ('BULLET', 'BLITZ', 'RAPID', 'CLASSICAL', 'UNKNOWN'));
+
+        - sql:
+            sql: ALTER TABLE games ADD CONSTRAINT chk_white_elo_limits CHECK (white_elo >= 100 AND white_elo <= 4000);
+
+        - sql:
+            sql: ALTER TABLE games ADD CONSTRAINT chk_black_elo_limits CHECK (black_elo >= 100 AND black_elo <= 4000);
+
+        - sql:
+            sql: ALTER TABLE games ADD CONSTRAINT chk_user_color_value_in_bound CHECK (user_color IN ('WHITE', 'BLACK'));
+
+        - sql:
+            sql: ALTER TABLE games ADD CONSTRAINT chk_result_value_in_bound CHECK (result IN ('WHITE_WON', 'BLACK_WON', 'DRAW'));
+
+        - sql:
+            sql: ALTER TABLE games ADD CONSTRAINT chk_analysis_status_value_in_bound CHECK (analysis_status IN ('NOT_STARTED', 'PROCESSING', 'COMPLETED', 'FAILED'));
