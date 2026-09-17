@@ -32,26 +32,26 @@ public class GameController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public GameResponseDto uploadGame(@Valid @RequestBody UploadGameRequestDto requestDto) {
-        return gameService.uploadGame(requestDto);
+        return gameService.upload(requestDto);
     }
 
     @Operation(summary = "Get a page of games for specific user")
     @GetMapping
     public Page<GameResponseDto> getAll(@ParameterObject Pageable pageable) {
-        return gameService.findAllByUserId(pageable);
+        return gameService.findAll(pageable);
     }
 
     @Operation(summary = "Get a game by id and user id")
     @GetMapping("/{id}")
     public GameResponseDto getGameById(@PathVariable Long id) {
-        return gameService.findByIdAndUserId(id);
+        return gameService.findById(id);
     }
 
     @Operation(summary = "Soft-delete user's game by id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deleteGameById(@PathVariable Long id) {
-        gameService.deleteByIdAndUserId(id);
+        gameService.deleteById(id);
     }
 
 }

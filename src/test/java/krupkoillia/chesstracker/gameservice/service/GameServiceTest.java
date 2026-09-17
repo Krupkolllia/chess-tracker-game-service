@@ -112,7 +112,7 @@ public class GameServiceTest {
                 .thenReturn(gameResponseDto2);
 
         // When
-        Page<GameResponseDto> actual = gameService.findAllByUserId(pageable);
+        Page<GameResponseDto> actual = gameService.findAll(pageable);
 
         // Then
         assertThat(actual.getContent())
@@ -152,7 +152,7 @@ public class GameServiceTest {
                 .thenReturn(expected);
 
         // When
-        GameResponseDto actual = gameService.findByIdAndUserId(gameEntity.getId());
+        GameResponseDto actual = gameService.findById(gameEntity.getId());
 
         // Then
         assertThat(actual).isEqualTo(expected);
@@ -178,7 +178,7 @@ public class GameServiceTest {
                 .thenReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> gameService.findByIdAndUserId(invalidId))
+        assertThatThrownBy(() -> gameService.findById(invalidId))
                 .isExactlyInstanceOf(EntityNotFoundException.class);
 
         securityUtilMock.verify(SecurityUtil::getAuthenticatedUserId);
@@ -219,7 +219,7 @@ public class GameServiceTest {
                 .thenReturn(gameEntity);
 
         // When
-        gameService.uploadGame(requestDto);
+        gameService.upload(requestDto);
 
         // Then
         assertThat(gameEntity.getUserId()).isEqualTo(MOCK_USER_ID);
@@ -251,7 +251,7 @@ public class GameServiceTest {
                 .thenReturn(true);
 
         // When
-        gameService.deleteByIdAndUserId(id);
+        gameService.deleteById(id);
 
         // Then
         securityUtilMock.verify(SecurityUtil::getAuthenticatedUserId);
@@ -275,7 +275,7 @@ public class GameServiceTest {
                 .thenReturn(false);
 
         // When & Then
-        assertThatThrownBy(() -> gameService.deleteByIdAndUserId(id))
+        assertThatThrownBy(() -> gameService.deleteById(id))
                 .isExactlyInstanceOf(EntityNotFoundException.class);
 
         securityUtilMock.verify(SecurityUtil::getAuthenticatedUserId);
