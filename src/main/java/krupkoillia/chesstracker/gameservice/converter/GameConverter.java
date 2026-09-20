@@ -17,12 +17,12 @@ public class GameConverter {
         GameEntity gameEntity = new GameEntity();
 
         gameEntity
-            .setTimeControl(mapTimeControl(parsedGame.timeControlMillis()))
-            .setWhiteName(parsedGame.whiteName())
-            .setBlackName(parsedGame.blackName())
-            .setWhiteElo(parsedGame.whiteElo())
-            .setBlackElo(parsedGame.blackElo())
-            .setResult(parsedGame.result());
+                .setTimeControl(mapTimeControl(parsedGame.timeControlMillis()))
+                .setWhiteName(parsedGame.whiteName())
+                .setBlackName(parsedGame.blackName())
+                .setWhiteElo(parsedGame.whiteElo())
+                .setBlackElo(parsedGame.blackElo())
+                .setResult(parsedGame.result());
 
         gameEntity.setMoves(mapMovesToModel(parsedGame.moves(), gameEntity));
 
@@ -40,11 +40,11 @@ public class GameConverter {
             int moveNumber = plyIndex / 2 + 1;
 
             moveEntity
-                .setGame(game)
-                .setMoveNumber(moveNumber)
-                .setColor(moveColor)
-                .setFen(move.fen())
-                .setNotation(move.notation());
+                    .setGame(game)
+                    .setMoveNumber(moveNumber)
+                    .setColor(moveColor)
+                    .setFen(move.fen())
+                    .setNotation(move.notation());
 
             moveEntities.add(moveEntity);
             plyIndex++;

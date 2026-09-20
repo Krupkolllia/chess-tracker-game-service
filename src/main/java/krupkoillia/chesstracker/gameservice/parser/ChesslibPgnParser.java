@@ -2,7 +2,6 @@ package krupkoillia.chesstracker.gameservice.parser;
 
 import com.github.bhlangonijr.chesslib.game.Game;
 import com.github.bhlangonijr.chesslib.game.GameResult;
-import com.github.bhlangonijr.chesslib.move.Move;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 import com.github.bhlangonijr.chesslib.pgn.PgnIterator;
 import java.io.IOException;
