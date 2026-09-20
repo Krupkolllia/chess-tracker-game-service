@@ -3,22 +3,22 @@ package krupkoillia.chesstracker.gameservice.parser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.github.bhlangonijr.chesslib.game.Game;
-import com.github.bhlangonijr.chesslib.game.GameResult;
+import krupkoillia.chesstracker.gameservice.dto.ParsedGame;
 import krupkoillia.chesstracker.gameservice.exception.InvalidPgnException;
+import krupkoillia.chesstracker.gameservice.model.enums.Result;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class PgnParserTest {
+public class ChesslibPgnParserTest {
 
-    private final PgnParser pgnParser = new PgnParser();
+    private final PgnParser pgnParser = new ChesslibPgnParser();
 
     @Test
     @DisplayName("""
-            parseGame method with valid pgn should
+            parse method with valid pgn should
             return parsed game
             """)
-    void parseGame_WithValidPgn_ShouldReturnParsedGame() {
+    void parse_WithValidPgn_ShouldReturnParsedGame() {
         // Given
         String pgn = """
                     [White "Magnus Carlsen"]
@@ -31,34 +31,34 @@ public class PgnParserTest {
                     """;
 
         // When
-        Game actual = pgnParser.parseGame(pgn);
+        ParsedGame actual = pgnParser.parse(pgn);
 
         // Then
-        assertThat(actual.getRound().getEvent().getTimeControl().getMilliseconds())
+        assertThat(actual.timeControlMillis())
                 .isEqualTo(300_000L);
 
-        assertThat(actual.getWhitePlayer().getName())
+        assertThat(actual.whiteName())
                 .isEqualTo("Magnus Carlsen");
 
-        assertThat(actual.getBlackPlayer().getName())
+        assertThat(actual.blackName())
                 .isEqualTo("Hikaru Nakamura");
 
-        assertThat(actual.getWhitePlayer().getElo())
+        assertThat(actual.whiteElo())
                 .isEqualTo(3380);
 
-        assertThat(actual.getBlackPlayer().getElo())
+        assertThat(actual.blackElo())
                 .isEqualTo(3407);
 
-        assertThat(actual.getResult()).isEqualTo(GameResult.DRAW);
+        assertThat(actual.result()).isEqualTo(Result.DRAW);
 
     }
 
     @Test
     @DisplayName("""
-            parseGame method with pgn without game result
+            parse method with pgn without game result
             should throw InvalidPgnException
             """)
-    void parseGame_WithPgnWithoutGameResult_ShouldThrowInvalidPgnException() {
+    void parse_WithPgnWithoutGameResult_ShouldThrowInvalidPgnException() {
         // Given
         String pgn = """
                     [White "Magnus Carlsen"]
@@ -69,7 +69,7 @@ public class PgnParserTest {
                     1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 1/2-1/2
                     """;
 
-        assertThatThrownBy(() -> pgnParser.parseGame(pgn))
+        assertThatThrownBy(() -> pgnParser.parse(pgn))
                 .isExactlyInstanceOf(InvalidPgnException.class)
                 .hasMessage("Game result is missing in provided PGN");
 
@@ -77,10 +77,10 @@ public class PgnParserTest {
 
     @Test
     @DisplayName("""
-            parseGame method with pgn without time control
+            parse method with pgn without time control
             should throw InvalidPgnException
             """)
-    void parseGame_WithPgnWithoutTimeControl_ShouldThrowInvalidPgnException() {
+    void parse_WithPgnWithoutTimeControl_ShouldThrowInvalidPgnException() {
         // Given
         String pgn = """
                     [White "Magnus Carlsen"]
@@ -91,7 +91,7 @@ public class PgnParserTest {
                     1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 1/2-1/2
                     """;
 
-        assertThatThrownBy(() -> pgnParser.parseGame(pgn))
+        assertThatThrownBy(() -> pgnParser.parse(pgn))
                 .isExactlyInstanceOf(InvalidPgnException.class)
                 .hasMessage("Time control is missing in provided PGN");
 
@@ -99,10 +99,10 @@ public class PgnParserTest {
 
     @Test
     @DisplayName("""
-            parseGame method with pgn without moves
+            parse method with pgn without moves
             should throw InvalidPgnException
             """)
-    void parseGame_WithPgnWithoutMoves_ShouldThrowInvalidPgnException() {
+    void parse_WithPgnWithoutMoves_ShouldThrowInvalidPgnException() {
         // Given
         String pgn = """
                     [White "Magnus Carlsen"]
@@ -113,7 +113,7 @@ public class PgnParserTest {
                     [TimeControl "300"]
                     """;
 
-        assertThatThrownBy(() -> pgnParser.parseGame(pgn))
+        assertThatThrownBy(() -> pgnParser.parse(pgn))
                 .isExactlyInstanceOf(InvalidPgnException.class)
                 .hasMessage("Moves syntax is invalid");
 
@@ -121,10 +121,10 @@ public class PgnParserTest {
 
     @Test
     @DisplayName("""
-            parseGame method with pgn containing invalid moves syntax
+            parse method with pgn containing invalid moves syntax
             should throw InvalidPgnException
             """)
-    void parseGame_WithPgnContainingInvalidMovesSyntax_ShouldThrowInvalidPgnException() {
+    void parse_WithPgnContainingInvalidMovesSyntax_ShouldThrowInvalidPgnException() {
         // Given
         String pgn = """
                     [White "Magnus Carlsen"]
@@ -136,21 +136,21 @@ public class PgnParserTest {
                     1. e4 eee5
                     """;
 
-        assertThatThrownBy(() -> pgnParser.parseGame(pgn))
+        assertThatThrownBy(() -> pgnParser.parse(pgn))
                 .isExactlyInstanceOf(InvalidPgnException.class);
 
     }
 
     @Test
     @DisplayName("""
-            parseGame method with pgn without game
+            parse method with pgn without game
             should throw InvalidPgnException
             """)
-    void parseGame_WithPgnWithoutGame_ShouldThrowInvalidPgnException() {
+    void parse_WithPgnWithoutGame_ShouldThrowInvalidPgnException() {
         // Given
         String pgn = " ";
 
-        assertThatThrownBy(() -> pgnParser.parseGame(pgn))
+        assertThatThrownBy(() -> pgnParser.parse(pgn))
                 .isExactlyInstanceOf(InvalidPgnException.class)
                 .hasMessage("Provided PGN contains no game");
 
@@ -158,10 +158,10 @@ public class PgnParserTest {
 
     @Test
     @DisplayName("""
-            parseGame method with pgn containing multiple games
+            parse method with pgn containing multiple games
             should throw InvalidPgnException
             """)
-    void parseGame_WithPgnContainingMultipleGames_ShouldThrowInvalidPgnException() {
+    void parse_WithPgnContainingMultipleGames_ShouldThrowInvalidPgnException() {
         // Given
         String pgn = """
                     [White "Magnus Carlsen"]
@@ -181,7 +181,7 @@ public class PgnParserTest {
                     1. e4 e5 2. Bc4 Nc6 3. Qh5 Nf6 4. Qxf7# 1-0
                     """;
 
-        assertThatThrownBy(() -> pgnParser.parseGame(pgn))
+        assertThatThrownBy(() -> pgnParser.parse(pgn))
                 .isExactlyInstanceOf(InvalidPgnException.class)
                 .hasMessage("Provided PGN contains multiple games");
 

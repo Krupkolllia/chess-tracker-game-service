@@ -26,7 +26,7 @@ public class GameService {
     private final GameLoader gameLoader;
 
     @Transactional(readOnly = true)
-    public Page<GameResponseDto> findAllByUserId(Pageable pageable) {
+    public Page<GameResponseDto> findAll(Pageable pageable) {
         Long userId = SecurityUtil.getAuthenticatedUserId();
 
         return gameRepository.findAllByUserId(userId, pageable)
@@ -34,7 +34,7 @@ public class GameService {
     }
 
     @Transactional(readOnly = true)
-    public GameResponseDto findByIdAndUserId(Long id) {
+    public GameResponseDto findById(Long id) {
         Long userId = SecurityUtil.getAuthenticatedUserId();
 
         GameEntity game = gameRepository.findByIdAndUserId(id, userId).orElseThrow(
@@ -46,7 +46,7 @@ public class GameService {
     }
 
     @Transactional
-    public GameResponseDto uploadGame(UploadGameRequestDto requestDto) {
+    public GameResponseDto upload(UploadGameRequestDto requestDto) {
         GameEntity game = gameLoader.load(requestDto.pgn());
 
         Long userId = SecurityUtil.getAuthenticatedUserId();
@@ -64,7 +64,7 @@ public class GameService {
     }
 
     @Transactional
-    public void deleteByIdAndUserId(Long id) {
+    public void deleteById(Long id) {
         Long userId = SecurityUtil.getAuthenticatedUserId();
 
         if (!gameRepository.existsByIdAndUserId(id, userId)) {

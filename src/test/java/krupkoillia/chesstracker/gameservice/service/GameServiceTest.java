@@ -3,7 +3,6 @@ package krupkoillia.chesstracker.gameservice.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -11,18 +10,16 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.github.bhlangonijr.chesslib.game.Game;
 import java.util.List;
 import java.util.Optional;
 import krupkoillia.chesstracker.gameservice.dto.GameResponseDto;
 import krupkoillia.chesstracker.gameservice.dto.UploadGameRequestDto;
 import krupkoillia.chesstracker.gameservice.exception.EntityNotFoundException;
+import krupkoillia.chesstracker.gameservice.loader.GameLoader;
 import krupkoillia.chesstracker.gameservice.mapper.GameMapper;
-import krupkoillia.chesstracker.gameservice.mapper.ParsedGameMapper;
 import krupkoillia.chesstracker.gameservice.model.GameEntity;
 import krupkoillia.chesstracker.gameservice.model.enums.AnalysisStatus;
 import krupkoillia.chesstracker.gameservice.model.enums.Color;
-import krupkoillia.chesstracker.gameservice.parser.PgnParser;
 import krupkoillia.chesstracker.gameservice.repository.GameRepository;
 import krupkoillia.chesstracker.gameservice.security.SecurityUtil;
 import org.instancio.Instancio;
@@ -52,10 +49,7 @@ public class GameServiceTest {
     private GameMapper gameMapper;
 
     @Mock
-    private PgnParser pgnParser;
-
-    @Mock
-    private ParsedGameMapper parsedGameMapper;
+    private GameLoader gameLoader;
 
     private MockedStatic<SecurityUtil> securityUtilMock;
 
@@ -77,10 +71,10 @@ public class GameServiceTest {
 
     @Test
     @DisplayName("""
-            findAllByUserId method should
+            findAll method should
             return all user's games
             """)
-    void findAllByUserId_ShouldReturnAllUsersGames() {
+    void findAll_ShouldReturnAllUsersGames() {
         // Given
         Pageable pageable = PageRequest.of(0, 20);
 
@@ -132,10 +126,10 @@ public class GameServiceTest {
 
     @Test
     @DisplayName("""
-            findByIdAndUserId method with existing game by id and user id
+            findById method with existing game by id and user id
             should return this game
             """)
-    void findByIdAndUserId_WithExistingGame_ShouldReturnThisGame() {
+    void findById_WithExistingGame_ShouldReturnThisGame() {
         // Given
         GameEntity gameEntity = Instancio.of(GameEntity.class)
                 .set(field(GameEntity::getUserId), MOCK_USER_ID)
@@ -167,10 +161,10 @@ public class GameServiceTest {
 
     @Test
     @DisplayName("""
-            findByIdAndUserId method when game not found should
+            findById method when game not found should
             throw EntityNotFoundException
             """)
-    void findByIdAndUserId_WhenGameNotFound_ShouldThrowEntityNotFoundException() {
+    void findById_WhenGameNotFound_ShouldThrowEntityNotFoundException() {
         // Given
         Long invalidId = 404L;
 
@@ -192,10 +186,10 @@ public class GameServiceTest {
 
     @Test
     @DisplayName("""
-            uploadGame method with valid request should
+            upload method with valid request should
             return uploaded game
             """)
-    void uploadGame_WithValidRequest_ShouldReturnUploadedGame() {
+    void upload_WithValidRequest_ShouldReturnUploadedGame() {
         // Given
         String pgn = """
                     [White "Magnus Carlsen"]
@@ -209,13 +203,9 @@ public class GameServiceTest {
 
         UploadGameRequestDto requestDto = new UploadGameRequestDto(pgn, Color.WHITE);
 
-        Game parsedGame = mock(Game.class);
         GameEntity gameEntity = Instancio.create(GameEntity.class);
 
-        when(pgnParser.parseGame(pgn))
-                .thenReturn(parsedGame);
-
-        when(parsedGameMapper.toModel(parsedGame))
+        when(gameLoader.load(pgn))
                 .thenReturn(gameEntity);
 
         // When
@@ -230,8 +220,7 @@ public class GameServiceTest {
         securityUtilMock.verify(SecurityUtil::getAuthenticatedUserId);
         securityUtilMock.verifyNoMoreInteractions();
 
-        verify(pgnParser).parseGame(pgn);
-        verify(parsedGameMapper).toModel(parsedGame);
+        verify(gameLoader).load(pgn);
         verify(gameRepository).saveAndFlush(gameEntity);
         verify(gameMapper).toDto(gameEntity);
 
@@ -240,10 +229,10 @@ public class GameServiceTest {
 
     @Test
     @DisplayName("""
-            deleteByIdAndUserId method with existing game should
+            deleteById method with existing game should
             delete the game
             """)
-    void deleteByIdAndUserId_WithExistingGame_ShouldDeleteTheGame() {
+    void deleteById_WithExistingGame_ShouldDeleteTheGame() {
         // Given
         Long id = 43L;
 
@@ -264,10 +253,10 @@ public class GameServiceTest {
 
     @Test
     @DisplayName("""
-            deleteByIdAndUserId method when game not found should
+            deleteById method when game not found should
             throw EntityNotFoundException
             """)
-    void deleteByIdAndUserId_WhenGameNotFound_ShouldThrowEntityNotFoundException() {
+    void deleteById_WhenGameNotFound_ShouldThrowEntityNotFoundException() {
         // Given
         Long id = 43L;
 
