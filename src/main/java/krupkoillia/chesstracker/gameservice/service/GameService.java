@@ -7,6 +7,8 @@ import krupkoillia.chesstracker.gameservice.dto.UploadGameRequestDto;
 import krupkoillia.chesstracker.gameservice.exception.EntityNotFoundException;
 import krupkoillia.chesstracker.gameservice.loader.GameLoader;
 import krupkoillia.chesstracker.gameservice.mapper.GameMapper;
+import krupkoillia.chesstracker.gameservice.messaging.command.AnalyzeGameCommand;
+import krupkoillia.chesstracker.gameservice.messaging.publisher.GameAnalysisPublisher;
 import krupkoillia.chesstracker.gameservice.model.GameEntity;
 import krupkoillia.chesstracker.gameservice.model.enums.AnalysisStatus;
 import krupkoillia.chesstracker.gameservice.repository.GameRepository;
@@ -93,7 +95,7 @@ public class GameService {
         Long userId = SecurityUtil.getAuthenticatedUserId();
 
         if (!gameRepository.existsByIdAndUserId(id, userId)) {
-            throw new EntityNotFoundException("Cannot delete not existing game");
+            throw new EntityNotFoundException("Cannot delete nonexisting game");
         }
 
         gameRepository.deleteByIdAndUserId(id, userId);

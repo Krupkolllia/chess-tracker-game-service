@@ -1,7 +1,7 @@
 package krupkoillia.chesstracker.gameservice.messaging.publisher;
 
 import krupkoillia.chesstracker.gameservice.messaging.KafkaTopics;
-import krupkoillia.chesstracker.gameservice.messaging.event.AnalyzeGameCommand;
+import krupkoillia.chesstracker.gameservice.messaging.command.AnalyzeGameCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;

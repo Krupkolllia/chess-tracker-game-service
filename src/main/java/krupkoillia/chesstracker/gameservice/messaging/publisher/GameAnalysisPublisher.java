@@ -1,6 +1,6 @@
 package krupkoillia.chesstracker.gameservice.messaging.publisher;
 
-import krupkoillia.chesstracker.gameservice.messaging.event.AnalyzeGameCommand;
+import krupkoillia.chesstracker.gameservice.messaging.command.AnalyzeGameCommand;
 
 public interface GameAnalysisPublisher {
 

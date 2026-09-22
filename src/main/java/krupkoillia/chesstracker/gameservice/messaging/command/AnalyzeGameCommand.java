@@ -1,10 +1,10 @@
-package krupkoillia.chesstracker.gameservice.messaging.event;
+package krupkoillia.chesstracker.gameservice.messaging.command;
 
 import java.time.Instant;
 import java.util.UUID;
 
 public record AnalyzeGameCommand(
-        UUID eventId,
+        UUID commandId,
         Long gameId,
         Long userId,
         String pgn,
