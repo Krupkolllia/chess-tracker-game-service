@@ -35,6 +35,13 @@ public class GameController {
         return gameService.upload(requestDto);
     }
 
+    @Operation(summary = "Request game analysis from Stockfish")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PostMapping("/{id}/analyze")
+    public void requestAnalysis(@PathVariable Long id) {
+        gameService.requestAnalysis(id);
+    }
+
     @Operation(summary = "Get a page of games for specific user")
     @GetMapping
     public Page<GameResponseDto> getAll(@ParameterObject Pageable pageable) {
