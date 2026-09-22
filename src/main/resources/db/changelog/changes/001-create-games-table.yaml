@@ -109,4 +109,4 @@ databaseChangeLog:
             sql: ALTER TABLE games ADD CONSTRAINT chk_result_value_in_bound CHECK (result IN ('WHITE_WON', 'BLACK_WON', 'DRAW'));
 
         - sql:
-            sql: ALTER TABLE games ADD CONSTRAINT chk_analysis_status_value_in_bound CHECK (analysis_status IN ('NOT_STARTED', 'PROCESSING', 'COMPLETED', 'FAILED'));
+            sql: ALTER TABLE games ADD CONSTRAINT chk_analysis_status_value_in_bound CHECK (analysis_status IN ('NOT_REQUESTED', 'REQUESTED', 'PROCESSING', 'COMPLETED', 'FAILED'));

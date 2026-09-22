@@ -215,7 +215,7 @@ public class GameServiceTest {
         assertThat(gameEntity.getUserId()).isEqualTo(MOCK_USER_ID);
         assertThat(gameEntity.getPgn()).isEqualTo(pgn);
         assertThat(gameEntity.getUserColor()).isEqualTo(requestDto.userColor());
-        assertThat(gameEntity.getAnalysisStatus()).isEqualTo(AnalysisStatus.NOT_STARTED);
+        assertThat(gameEntity.getAnalysisStatus()).isEqualTo(AnalysisStatus.NOT_REQUESTED);
 
         securityUtilMock.verify(SecurityUtil::getAuthenticatedUserId);
         securityUtilMock.verifyNoMoreInteractions();
