@@ -19,8 +19,4 @@ public class KafkaTopics {
             .build();
     }
 
-    private KafkaTopics() {
-
-    }
-
 }

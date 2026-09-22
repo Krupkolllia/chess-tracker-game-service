@@ -2,7 +2,9 @@ package krupkoillia.chesstracker.gameservice.model.enums;
 
 public enum AnalysisStatus {
 
-    NOT_STARTED,
+    NOT_REQUESTED,
+
+    REQUESTED,
 
     PROCESSING,
 

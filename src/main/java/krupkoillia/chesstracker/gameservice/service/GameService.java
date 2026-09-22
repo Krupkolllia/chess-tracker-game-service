@@ -55,7 +55,7 @@ public class GameService {
                 .setUserId(userId)
                 .setPgn(requestDto.pgn())
                 .setUserColor(requestDto.userColor())
-                .setAnalysisStatus(AnalysisStatus.NOT_STARTED);
+                .setAnalysisStatus(AnalysisStatus.NOT_REQUESTED);
 
         gameRepository.saveAndFlush(game);
 
