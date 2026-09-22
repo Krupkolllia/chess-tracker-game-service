@@ -23,9 +23,11 @@ import org.springframework.stereotype.Component;
 public class ChesslibPgnParser implements PgnParser {
 
     public ParsedGame parse(String pgn) {
-        Path tempFile = createTempFile(pgn);
+        Path tempFile = null;
 
         try {
+            tempFile = createTempFile(pgn);
+
             return parseFile(tempFile);
         } finally {
             deleteTempFile(tempFile);
@@ -48,14 +50,16 @@ public class ChesslibPgnParser implements PgnParser {
             Iterator<Game> iterator = games.iterator();
 
             if (!iterator.hasNext()) {
-                throw new InvalidPgnException("Provided PGN contains no games");
+                throw new InvalidPgnException("Provided PGN contains no game");
             }
 
             Game game = iterator.next();
 
-            if (game == null) {
-                throw new InvalidPgnException("Chesslib returned null game");
+            if (iterator.hasNext()) {
+                throw new InvalidPgnException("Provided PGN contains multiple games");
             }
+
+            validateGame(game);
 
             return toDto(game);
         } catch (InvalidPgnException e) {
@@ -76,6 +80,22 @@ public class ChesslibPgnParser implements PgnParser {
             mapGameResult(game.getResult()),
             mapMoves(game.getHalfMoves())
         );
+    }
+
+    private void validateGame(Game game) {
+        if (game.getResult() == null || game.getResult() == GameResult.ONGOING) {
+            throw new InvalidPgnException("Game result is missing in provided PGN");
+        }
+
+        if (game.getRound().getEvent().getTimeControl() == null) {
+            throw new InvalidPgnException("Time control is missing in provided PGN");
+        }
+
+        MoveList moves = game.getHalfMoves();
+        if (moves == null || moves.isEmpty()) {
+            throw new InvalidPgnException("Moves syntax is invalid");
+        }
+
     }
 
     private Result mapGameResult(GameResult gameResult) {
@@ -103,6 +123,10 @@ public class ChesslibPgnParser implements PgnParser {
     }
 
     private void deleteTempFile(Path file) {
+        if (file == null) {
+            return;
+        }
+
         try {
             Files.deleteIfExists(file);
         } catch (IOException e) {
