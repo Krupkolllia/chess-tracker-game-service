@@ -1,20 +1,4 @@
 services:
-  db:
-    image: postgres:17
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "${POSTGRES_LOCAL_PORT}:${POSTGRES_DOCKER_PORT}"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
   app:
     build: .
     restart: on-failure
@@ -23,20 +7,11 @@ services:
     env_file:
       - .env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:${POSTGRES_DOCKER_PORT}/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/game_service_db
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:19092
-    depends_on:
-      db:
-        condition: service_healthy
-
     networks:
       - default
       - chesstracker
-
-volumes:
-  postgres_data:
 
 networks:
   chesstracker:
