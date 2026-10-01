@@ -2,6 +2,7 @@ package krupkoillia.chesstracker.gameservice.parser;
 
 import com.github.bhlangonijr.chesslib.game.Game;
 import com.github.bhlangonijr.chesslib.game.GameResult;
+import com.github.bhlangonijr.chesslib.game.TimeControl;
 import com.github.bhlangonijr.chesslib.move.MoveList;
 import com.github.bhlangonijr.chesslib.pgn.PgnIterator;
 import java.io.IOException;
@@ -83,12 +84,32 @@ public class ChesslibPgnParser implements PgnParser {
     }
 
     private void validateGame(Game game) {
-        if (game.getResult() == null || game.getResult() == GameResult.ONGOING) {
+        GameResult gameResult = game.getResult();
+        if (gameResult == null || gameResult == GameResult.ONGOING) {
             throw new InvalidPgnException("Game result is missing in provided PGN");
         }
 
-        if (game.getRound().getEvent().getTimeControl() == null) {
+        TimeControl timeControl = game.getRound().getEvent().getTimeControl();
+        if (timeControl == null) {
             throw new InvalidPgnException("Time control is missing in provided PGN");
+        }
+
+        int whiteElo = game.getWhitePlayer().getElo();
+        if (whiteElo < 100) {
+            throw new InvalidPgnException("White player's elo is below a 100");
+        }
+
+        if (whiteElo > 4000) {
+            throw new InvalidPgnException("White player's elo is above 4000");
+        }
+
+        int blackElo = game.getBlackPlayer().getElo();
+        if (blackElo < 100) {
+            throw new InvalidPgnException("Black player's elo is below a 100");
+        }
+
+        if (blackElo > 4000) {
+            throw new InvalidPgnException("Black player's elo is above 4000");
         }
 
         MoveList moves = game.getHalfMoves();
